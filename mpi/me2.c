@@ -83,33 +83,19 @@ int main(int argc, char *argv[]) {
     }
 
     // compute primes from 2 to sqrt(n);
-    unsigned long long int sqrt_n = sqrt(n);
-    primes = (char*)calloc(sqrt_n + 1, 1);
-	unsigned long long int prime_i = 3;
-	unsigned long long int prime_first;
+    int sqrt_n = sqrt(m);
+    primes = (char*)malloc(sqrt_n+1);
+	int prime_i = 2;
+	int prime_first;
+	int prime_first_;
 	do{
-		while(primes[prime_i++]);
-		for(prime_first = prime_i;prime_first<=sqrt_n;prime_first = prime_first + prime_i){
-			primes[prime_first] = 1;
+		prime_first = prime_i*prime_i;
+		for(prime_first_ = prime_first;prime_first_<=sqrt_n;prime_first_ = prime_first_ + prime_i){
+			primes[prime_first_] = 1;
 		}
-	}while(prime_i<=sqrt_n);
-	/*	
-    for (prime_multiple = 2; 
-         prime_multiple <= sqrt_n; 
-         prime_multiple += 2)    {
-        primes[prime_multiple] = 1;
-    }
+		while(primes[++prime_i]==1);
+	}while(prime_i*prime_i<=sqrt_n);
 
-    for (prime = 3; prime <= sqrt_n; prime += 2)    {
-        if (primes[prime] == 1)
-            continue;
-
-        for (prime_multiple = prime << 1;
-             prime_multiple <= sqrt_n; 
-             prime_multiple += prime)    {
-            primes[prime_multiple] = 1;
-        }
-    } */
 
     for (i = 0; i < size; i++) marked[i] = 0;
     if (!id) index = 0;
@@ -125,7 +111,7 @@ int main(int argc, char *argv[]) {
             else first = ((low_value%prime)%2==0)?((low_value+2*prime-low_value%prime-low_value)/2):((low_value+prime-low_value%prime-low_value)/2);
         }
         for (i = first; i < size; i = i + prime  ) marked[i] = 1;
-
+		
 		//给所有的primes数组进行marked标记
 	}
     count = 0;
@@ -140,15 +126,12 @@ int main(int argc, char *argv[]) {
     elapsed_time += MPI_Wtime();
 
 
-    /* Print the results */
-    printf("id:%d\n",id);
-    printf("low_value:%lld,high_value:%lld\n",low_value,high_value);
-    printf("my id is %d,the number of su shu is %ld\n",id,count);
+    
 
     // 统计中没有算上2，需要在global——count中加上1
     if (!id) {
         printf("The total number of prime: %ld, total time: %10.6f, total node %d\n", global_count+1, elapsed_time, p);
-    }
+    } 
     MPI_Finalize();
     return 0;
 
